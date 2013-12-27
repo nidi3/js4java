@@ -4,10 +4,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static stni.js4java.jsdoc.Tag.*;
 
 /**
  *
@@ -54,9 +54,8 @@ public class DefaultJsDocParserTest {
         final List<JsDoc> jsDocs = parser.parseJsDoc(new StringReader("bla\n/** @const */ var a"));
         assertEquals(1, jsDocs.size());
         assertEquals("", jsDocs.get(0).getDescription());
-        final Iterator<JsDocTag> iter = jsDocs.get(0).iterator();
-        assertEquals(new JsDocTag("Const", null, null, null), iter.next());
-        assertFalse(iter.hasNext());
+        assertEquals(new JsDocTag("Const", null, null, null), jsDocs.get(0).getTag("Const"));
+        assertEquals(1, jsDocs.get(0).size());
     }
 
     @Test(expected = JsDocParserException.class)
@@ -66,27 +65,27 @@ public class DefaultJsDocParserTest {
 
     @Test
     public void simpleTag() throws Exception {
-        assertOneTag(new JsDocTag("const", null, null, null), "bla\n/** desc \n * @const \n */ \n var a;");
+        assertOneTag(new JsDocTag(INHERIT_DOC, null, null, null), "bla\n/** desc \n * @inheritDoc \n */ \n var a;");
     }
 
     @Test
     public void descTag() throws Exception {
-        assertOneTag(new JsDocTag("deprecated", null, null, "bla second"), "bla\n/** desc \n * @deprecated bla \n *second\n */ \n var a");
+        assertOneTag(new JsDocTag(DEPRECATED, null, null, "bla second"), "bla\n/** desc \n * @deprecated bla \n *second\n */ \n var a");
     }
 
     @Test
     public void typeTag() throws Exception {
-        assertOneTag(new JsDocTag("type", "number", null, null), "bla\n/** desc \n * @type {number} \n */ \n var a");
+        assertOneTag(new JsDocTag(TYPE, "number", null, null), "bla\n/** desc \n * @type {number} \n */ \n var a");
     }
 
     @Test
     public void typeAndDescTag() throws Exception {
-        assertOneTag(new JsDocTag("return", "number", null, "The result."), "bla\n/** desc \n * @return {number} The result.\n */ \n var a");
+        assertOneTag(new JsDocTag(RETURN, "number", null, "The result."), "bla\n/** desc \n * @return {number} The result.\n */ \n var a");
     }
 
     @Test
     public void fullTag() throws Exception {
-        assertOneTag(new JsDocTag("param", "number", "n", "The result."), "bla\n/** desc \n * @param {number} n The result.\n */ \n var a");
+        assertOneTag(new JsDocTag(PARAM, "number", "n", "The result."), "bla\n/** desc \n * @param {number} n The result.\n */ \n var a");
     }
 
     @Test

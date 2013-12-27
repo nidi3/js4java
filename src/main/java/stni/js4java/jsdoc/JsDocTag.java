@@ -9,6 +9,10 @@ public class JsDocTag {
     private final String parameter;
     private String description;
 
+    public JsDocTag(Tag name, String type, String parameter, String description) {
+        this(name.realName(), type, parameter, description);
+    }
+
     public JsDocTag(String name, String type, String parameter, String description) {
         this.name = name;
         this.type = type;

@@ -1,16 +1,13 @@
 package stni.js4java.jsdoc;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
  */
-public class JsDoc implements Iterable<JsDocTag> {
+public class JsDoc implements Iterable<List<JsDocTag>> {
     private final String description;
-    private final Map<String, JsDocTag> tags;
+    private final Map<String, List<JsDocTag>> tags;
     private final JsDocedElement element;
 
     public JsDoc(String description, List<JsDocTag> tagList, JsDocedElement element) {
@@ -18,7 +15,12 @@ public class JsDoc implements Iterable<JsDocTag> {
         this.element = element;
         tags = new HashMap<>();
         for (JsDocTag tag : tagList) {
-            tags.put(tag.getName(), tag);
+            List<JsDocTag> existing = tags.get(tag.getName());
+            if (existing == null) {
+                existing = new ArrayList<>(1);
+                tags.put(tag.getName(), existing);
+            }
+            existing.add(tag);
         }
     }
 
@@ -27,7 +29,21 @@ public class JsDoc implements Iterable<JsDocTag> {
     }
 
     public JsDocTag getTag(String name) {
-        return tags.get(name);
+        final List<JsDocTag> tag = tags.get(name);
+        return tag == null ? null : tag.get(0);
+    }
+
+    public List<JsDocTag> getTags(String name) {
+        final List<JsDocTag> tag = tags.get(name);
+        return tag == null ? Collections.<JsDocTag>emptyList() : tag;
+    }
+
+    public JsDocTag getTag(Tag name) {
+        return getTag(name.realName());
+    }
+
+    public List<JsDocTag> getTags(Tag name) {
+        return getTags(name.realName());
     }
 
     public JsDocedElement getElement() {
@@ -35,7 +51,7 @@ public class JsDoc implements Iterable<JsDocTag> {
     }
 
     @Override
-    public Iterator<JsDocTag> iterator() {
+    public Iterator<List<JsDocTag>> iterator() {
         return tags.values().iterator();
     }
 
