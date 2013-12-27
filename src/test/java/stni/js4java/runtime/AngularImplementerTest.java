@@ -5,6 +5,7 @@ import org.junit.Test;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.InputStreamReader;
+import java.io.Reader;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,9 +19,14 @@ public class AngularImplementerTest {
 
     @Test
     public void simple() throws Exception {
+        assertSimple(new InputStreamReader(getClass().getResourceAsStream("angular-1.2.6.js"), "utf-8"));
+        assertSimple(new InputStreamReader(getClass().getResourceAsStream("angular-1.2.6.min.js"), "utf-8"));
+    }
+
+    private void assertSimple(Reader angular) throws Exception {
         final ScriptEngineManager manager = new ScriptEngineManager();
         final ScriptEngine js = manager.getEngineByExtension("js");
-        final AngularImplementer ai = new AngularImplementer(js, new InputStreamReader(getClass().getResourceAsStream("angular-1.2.6.js"), "utf-8"));
+        final AngularImplementer ai = new AngularImplementer(js,angular);
         ai.module("util");
         ai.service("util", "str", "this.sub=function(s,a,b){return s.substring(a,b);}");
         ai.bootstrap("app", "util");
