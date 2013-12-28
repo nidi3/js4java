@@ -41,6 +41,12 @@ public class GenerateInterfacesMojo extends AbstractMojo {
     private String includes;
 
     /**
+     * @parameter expression="${includeBasedir}"
+     * @required
+     */
+    private String includeBasedir;
+
+    /**
      * @parameter expression="${package}"
      * @required
      */
@@ -68,10 +74,18 @@ public class GenerateInterfacesMojo extends AbstractMojo {
 
             for (File file : findInputs()) {
                 createOutput(file);
+                copyIntoTarget(file);
             }
         } catch (IOException | DependencyResolutionRequiredException e) {
             throw new MojoExecutionException("Problem executing plugin", e);
         }
+    }
+
+    private void copyIntoTarget(File file) throws IOException {
+        final String output = "target/classes";
+        final File dest = new File(project.getBasedir(), output + "/" + packge.replace('.', '/'));
+        dest.mkdirs();
+        FileUtils.copyFile(file, new File(dest, file.getName()));
     }
 
     private void createOutput(File file) throws IOException {
@@ -83,11 +97,11 @@ public class GenerateInterfacesMojo extends AbstractMojo {
     }
 
     private List<File> findInputs() throws IOException {
-        final String includes = prepend(project.getBasedir().getName() + "/", this.includes);
+        final String prefixedIncludes = prepend(project.getBasedir().getName() + "/");
         final File basedir = project.getBasedir().getParentFile();
-        getLog().info("Input from " + basedir + " " + includes);
+        getLog().info("Input from " + basedir + " " + prefixedIncludes);
         @SuppressWarnings("unchecked")
-        final List files = FileUtils.getFiles(basedir, includes, null);
+        final List files = FileUtils.getFiles(basedir, prefixedIncludes, null);
         return files;
     }
 
@@ -99,10 +113,11 @@ public class GenerateInterfacesMojo extends AbstractMojo {
         return dest;
     }
 
-    private String prepend(String prefix, String includes) {
+    private String prepend(String prefix) {
         final String[] split = includes.split(",");
         for (int i = 0; i < split.length; i++) {
-            split[i] = split[i].startsWith("../") ? split[i].substring(3) : (prefix + split[i]);
+            String value = includeBasedir + "/" + split[i];
+            split[i] = value.startsWith("../") ? value.substring(3) : (prefix + value);
         }
         return StringUtils.join(split, ",");
     }
