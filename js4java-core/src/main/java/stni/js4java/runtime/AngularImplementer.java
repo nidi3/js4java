@@ -19,11 +19,17 @@ public class AngularImplementer implements Implementer {
                 "document={" +
                 "  addEventListener:function(){}," +
                 "  createElement:function(){" +
-                "    return {setAttribute:function(){},pathname:'xxx'};"+
-                "  }"+
+                "    return {" +
+                "      setAttribute:function(){}," +
+                "      pathname:'xxx'," +
+                "      removeChild:function(){}" +
+                "    };" +
+                "  }," +
+                "  getElementsByTagName:function(){}" +
                 "};" +
                 "addEventListener=function(){};" +
-                "location={};" +
+                "location={href:'http://my.com/path',protocol:'http'};" +
+                "setTimeout=function(){};" +
                 "navigator={};");
         engine.eval(fixIncompatabilities(angular));
         this.engine = engine;
@@ -60,7 +66,7 @@ public class AngularImplementer implements Implementer {
     }
 
     public void bootstrap(String target, String... modules) throws ScriptException {
-        engine.eval(target + "=angular.bootstrap({},[" + join(modules) + "]);");
+        engine.eval(target + "=angular.bootstrap({addEventListener:function(){}},[" + join(modules) + "]);");
     }
 
     public void module(String name, String... dependencies) throws ScriptException {
