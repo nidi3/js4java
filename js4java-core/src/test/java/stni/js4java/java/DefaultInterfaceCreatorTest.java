@@ -20,10 +20,10 @@ import static stni.js4java.jsdoc.Tag.RETURN;
  *
  */
 public class DefaultInterfaceCreatorTest {
-    private DefaultInterfaceCreator creator = new DefaultInterfaceCreator(new DefaultTypeResolver());
 
     @Test(expected = InterfaceCreatorException.class)
     public void noReturnType() throws IOException {
+        InterfaceCreator creator = new DefaultInterfaceCreator(new DefaultTypeResolver());
         final JsDoc jsDoc = new JsDoc("bla", Arrays.<JsDocTag>asList(), new JsDocedElement("a", true));
         creator.createInterface(Collections.singletonList(jsDoc), "pack.Iface", new StringWriter());
 
@@ -31,6 +31,8 @@ public class DefaultInterfaceCreatorTest {
 
     @Test
     public void noParams() throws IOException {
+        InterfaceCreator creator = new DefaultInterfaceCreator(new DefaultTypeResolver());
+
         final List<JsDoc> jsDocs = Arrays.asList(
                 new JsDoc("bla", Arrays.asList(new JsDocTag(RETURN, "string", null, "blu")), new JsDocedElement("a", true)),
                 new JsDoc("bla", Arrays.asList(new JsDocTag(RETURN, "string", null, "blu")), new JsDocedElement("b", false)));
@@ -42,6 +44,8 @@ public class DefaultInterfaceCreatorTest {
 
     @Test
     public void standardTypes() throws IOException {
+        InterfaceCreator creator = new DefaultInterfaceCreator(new ClasspathTypeResolver(Arrays.asList("java.util"), getClass().getClassLoader()));
+
         final List<JsDoc> jsDocs = Arrays.asList(
                 new JsDoc("bla", Arrays.asList(new JsDocTag(RETURN, "string", null, "blu")), new JsDocedElement("a", true)),
                 new JsDoc("bla", Arrays.asList(
@@ -49,7 +53,8 @@ public class DefaultInterfaceCreatorTest {
                         new JsDocTag(PARAM, "number", "a", "w"),
                         new JsDocTag(PARAM, "?number", "b", "w"),
                         new JsDocTag(PARAM, "boolean", "c", "w"),
-                        new JsDocTag(PARAM, "?boolean", "d", "w")
+                        new JsDocTag(PARAM, "?boolean", "d", "w"),
+                        new JsDocTag(PARAM, "List", "e", "w")
                 ), new JsDocedElement("b", true)));
         final StringWriter out = new StringWriter();
         creator.createInterface(jsDocs, "stni.js4java.java.StandardTypes", out);

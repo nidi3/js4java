@@ -26,7 +26,7 @@ enum TagType {
             return new JsDocTag(matcher.group(1), null, null, matcher.group(2));
         }
     },
-    TYPE_AND_DESC("\\{(.*?)\\}\\s*(.*)", RETURN) {
+    TYPE_AND_DESC("\\{(.*?)\\}\\s*(.*)", RETURN, RETURNS) {
         protected JsDocTag tagOf(Matcher matcher) {
             return new JsDocTag(matcher.group(1), matcher.group(2), null, matcher.group(3));
         }
@@ -57,7 +57,9 @@ enum TagType {
         String name = matcher.group(1);
         TagType type = ofName(name);
         final Matcher correctMatcher = type.regex.matcher(line);
-        correctMatcher.find();
+        if (!correctMatcher.find()) {
+            throw new JsDocParserException("Wrong format of line '" + line + "'");
+        }
         return type.tagOf(correctMatcher);
     }
 

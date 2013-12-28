@@ -65,7 +65,7 @@ public class DefaultJsDocParserTest {
 
     @Test
     public void simpleTag() throws Exception {
-        assertOneTag(new JsDocTag(INHERIT_DOC, null, null, null), "bla\n/** desc \n * @inheritDoc \n */ \n var a;");
+        assertOneTag(new JsDocTag(INHERIT_DOC, null, null, null), "bla\n/** desc \n * \n * @inheritDoc \n */ \n var a;");
     }
 
     @Test
@@ -90,19 +90,19 @@ public class DefaultJsDocParserTest {
 
     @Test
     public void docedFunction() throws Exception {
-        final List<JsDoc> jsDocs = parser.parseJsDoc(new StringReader("bla\n/** desc \n */ \n function bla(){"));
+        final List<JsDoc> jsDocs = parser.parseJsDoc(new StringReader("bla\n/** desc \n */ \n function a.b.bla(){"));
         assertEquals(new JsDocedElement("bla", true), jsDocs.get(0).getElement());
     }
 
     @Test
     public void docedVariable() throws Exception {
-        final List<JsDoc> jsDocs = parser.parseJsDoc(new StringReader("bla\n/** desc \n */ \n var bla;"));
+        final List<JsDoc> jsDocs = parser.parseJsDoc(new StringReader("bla\n/** desc \n */ \n var a.b.bla;"));
         assertEquals(new JsDocedElement("bla", false), jsDocs.get(0).getElement());
     }
 
     @Test
     public void docedFunctionAsVariable() throws Exception {
-        final List<JsDoc> jsDocs = parser.parseJsDoc(new StringReader("bla\n/** desc \n */ \n var bla=function(){"));
+        final List<JsDoc> jsDocs = parser.parseJsDoc(new StringReader("bla\n/** desc \n */ \n a.b.bla=function(){"));
         assertEquals(new JsDocedElement("bla", true), jsDocs.get(0).getElement());
     }
 

@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 public class DefaultJsDocParser implements JsDocParser {
     private static final Pattern JS_DOC_START = Pattern.compile("^\\s*/\\*\\*");
     private static final Pattern JS_DOC_END = Pattern.compile("\\*/\\s*$");
-    private static final Pattern FUNCTION = Pattern.compile("^\\s*function\\s+(\\w+)");
-    private static final Pattern VARIABLE = Pattern.compile("^\\s*var\\s+(\\w+)(\\s*=\\s*function)?");
+    private static final Pattern FUNCTION = Pattern.compile("^\\s*function\\s+([a-zA-Z0-9\\.]+)");
+    private static final Pattern VARIABLE = Pattern.compile("^\\s*(?:var\\s+)?([a-zA-Z0-9\\.]+)(\\s*=\\s*function)?");
     private static final String END = "*/";
     private static final String START_OF_LINE = "\\s*\\*\\s*";
 
@@ -53,7 +53,7 @@ public class DefaultJsDocParser implements JsDocParser {
         JsDocTag tag = null;
         String desc = line.substring(startPos).trim();
         while ((line = readLine(in.readLine())) != END) {
-            if (line.charAt(0) == '@') {
+            if (line.length() > 0 && line.charAt(0) == '@') {
                 tag = parseTag(line);
                 tags.add(tag);
             } else if (tag != null) {
@@ -68,13 +68,18 @@ public class DefaultJsDocParser implements JsDocParser {
     private JsDocedElement parseElement(String line) {
         final Matcher func = FUNCTION.matcher(line);
         if (func.find()) {
-            return new JsDocedElement(func.group(1), true);
+            return new JsDocedElement(simpleName(func.group(1)), true);
         }
         final Matcher var = VARIABLE.matcher(line);
         if (var.find()) {
-            return new JsDocedElement(var.group(1), var.groupCount() > 1 && var.group(2) != null);
+            return new JsDocedElement(simpleName(var.group(1)), var.groupCount() > 1 && var.group(2) != null);
         }
         throw new JsDocParserException("Unparsable code '" + line + "'");
+    }
+
+    private String simpleName(String name) {
+        int pos = name.lastIndexOf('.');
+        return pos < 0 ? name : name.substring(pos + 1);
     }
 
     private JsDocTag parseTag(String line) {

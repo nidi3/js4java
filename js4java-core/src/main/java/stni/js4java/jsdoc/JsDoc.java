@@ -1,6 +1,10 @@
 package stni.js4java.jsdoc;
 
+
 import java.util.*;
+
+import static stni.js4java.jsdoc.Tag.RETURN;
+import static stni.js4java.jsdoc.Tag.RETURNS;
 
 /**
  *
@@ -40,6 +44,11 @@ public class JsDoc implements Iterable<List<JsDocTag>> {
 
     public JsDocTag getTag(Tag name) {
         return getTag(name.realName());
+    }
+
+    public JsDocTag getReturnTag() {
+        final JsDocTag tag = getTag(RETURN);
+        return tag != null ? tag : getTag(RETURNS);
     }
 
     public List<JsDocTag> getTags(Tag name) {
