@@ -5,11 +5,13 @@ import stni.js4java.jsdoc.JsDocTag;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static stni.js4java.jsdoc.Tag.PARAM;
-import static stni.js4java.jsdoc.Tag.RETURN;
 
 /**
  *
@@ -23,36 +25,51 @@ public class DefaultInterfaceCreator implements InterfaceCreator {
 
     public void createInterface(List<JsDoc> jsDocs, String name, Writer out) throws IOException {
         try (BufferedWriter bufferedOut = new BufferedWriter(out)) {
-            writeHeader(name, bufferedOut);
-            for (JsDoc jsDoc : jsDocs) {
-                writeMethod(jsDoc, bufferedOut);
-            }
+            Set<String> imports = new TreeSet<>();
+            final String methods = writeMethods(jsDocs, imports);
+
+            writeHeader(bufferedOut, name, imports);
+            write(bufferedOut, methods);
             writeFooter(bufferedOut);
         }
     }
 
-    private void writeHeader(String name, BufferedWriter out) throws IOException {
+    private String writeMethods(List<JsDoc> jsDocs, Set<String> imports) throws IOException {
+        final StringWriter sw = new StringWriter();
+        final BufferedWriter bsw = new BufferedWriter(sw);
+        for (JsDoc jsDoc : jsDocs) {
+            writeMethod(bsw, jsDoc, imports);
+        }
+        bsw.flush();
+        return sw.toString();
+    }
+
+    private void writeHeader(BufferedWriter out, String name, Set<String> imports) throws IOException {
         name = name.replace('/', '.');
         int lastDot = name.lastIndexOf('.');
         writeln(out, "package " + name.substring(0, lastDot) + ";");
-        writeln(out, "import java.util.Date;");
+        writeln(out, "");
+        for (String imprt : imports) {
+            writeln(out, "import " + imprt + ";");
+        }
+        writeln(out, "");
         writeln(out, "public interface " + name.substring(lastDot + 1) + "{");
     }
 
-    private void writeMethod(JsDoc jsDoc, BufferedWriter out) throws IOException {
+    private void writeMethod(BufferedWriter out, JsDoc jsDoc, Set<String> imports) throws IOException {
         if (jsDoc.getElement().isFunction()) {
-            final JsDocTag ret = jsDoc.getTag(RETURN);
+            final JsDocTag ret = jsDoc.getReturnTag();
             if (ret == null) {
                 throw new InterfaceCreatorException("@return is missing for function '" + jsDoc.getElement().getName() + "'");
             }
             writeJavadoc(out, jsDoc);
-            writeMethodSignature(out, jsDoc);
+            writeMethodSignature(out, imports, jsDoc);
             writeln(out, "");
         }
     }
 
-    private void writeMethodSignature(BufferedWriter out, JsDoc jsDoc) throws IOException {
-        write(out, "  " + resolveType(jsDoc.getTag(RETURN)) + " " + jsDoc.getElement().getName() + "(");
+    private void writeMethodSignature(BufferedWriter out, Set<String> imports, JsDoc jsDoc) throws IOException {
+        write(out, "  " + resolveType(jsDoc.getReturnTag(), imports) + " " + jsDoc.getElement().getName() + "(");
         boolean first = true;
         for (JsDocTag tag : jsDoc.getTags(PARAM)) {
             if (first) {
@@ -60,7 +77,7 @@ public class DefaultInterfaceCreator implements InterfaceCreator {
             } else {
                 write(out, ", ");
             }
-            write(out, resolveType(tag) + " " + tag.getParameter());
+            write(out, resolveType(tag, imports) + " " + tag.getParameter());
         }
         writeln(out, ");");
     }
@@ -71,13 +88,13 @@ public class DefaultInterfaceCreator implements InterfaceCreator {
         for (JsDocTag tag : jsDoc.getTags(PARAM)) {
             writeln(out, "   * @param " + tag.getParameter() + " " + tag.getDescription());
         }
-        writeln(out, "   * @return " + jsDoc.getTag(RETURN).getDescription());
+        writeln(out, "   * @return " + jsDoc.getReturnTag().getDescription());
         writeln(out, "   */");
     }
 
 
-    private String resolveType(JsDocTag tag) {
-        return typeResolver.toJavaType(tag.getType());
+    private String resolveType(JsDocTag tag, Set<String> imports) {
+        return typeResolver.toJavaType(tag.getType(), imports);
     }
 
     private void writeFooter(BufferedWriter out) throws IOException {
