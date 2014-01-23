@@ -28,32 +28,32 @@ import java.util.List;
 public class GenerateInterfacesMojo extends AbstractMojo {
 
     /**
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @required
      * @readonly
      */
     private MavenProject project;
 
     /**
-     * @parameter expression="${includes}"
+     * @parameter property="includes"
      * @required
      */
     private String includes;
 
     /**
-     * @parameter expression="${includeBasedir}"
+     * @parameter property="includeBasedir"
      * @required
      */
     private String includeBasedir;
 
     /**
-     * @parameter expression="${package}"
+     * @parameter property="package"
      * @required
      */
     private String packge;
 
     /**
-     * @parameter expression="${importPackages}"
+     * @parameter property="importPackages"
      * @required
      */
     private String importPackages;
@@ -101,7 +101,7 @@ public class GenerateInterfacesMojo extends AbstractMojo {
         final File basedir = project.getBasedir().getParentFile();
         getLog().info("Input from " + basedir + " " + prefixedIncludes);
         @SuppressWarnings("unchecked")
-        final List files = FileUtils.getFiles(basedir, prefixedIncludes, null);
+        final List<File> files = FileUtils.getFiles(basedir, prefixedIncludes, null);
         return files;
     }
 

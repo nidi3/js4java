@@ -35,7 +35,7 @@ public abstract class AbstractJsBeanCreator implements BeanFactoryPostProcessor 
                 beanFactory.registerSingleton(iface.getName(), implementer.implementBy(iface, iface.getSimpleName()));
             }
         } catch (ScriptException | IOException e) {
-            throw new BeanCreationException("Problem instanciating js beans", e);
+            throw new BeanCreationException("Problem instantiating js beans", e);
         }
     }
 

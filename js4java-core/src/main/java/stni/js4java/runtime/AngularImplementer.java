@@ -16,10 +16,10 @@ public class AngularImplementer extends AbstractImplementer {
     public AngularImplementer(ScriptEngine engine, JavaToJsConverter javaToJsConverter, Reader angular) throws IOException, ScriptException {
         super(engine, javaToJsConverter);
         engine.eval(Utils.loadResource("angularMocks.js"));
-        engine.eval(fixIncompatabilities(angular));
+        engine.eval(fixIncompatibilities(angular));
     }
 
-    private String fixIncompatabilities(Reader angular) throws IOException {
+    private String fixIncompatibilities(Reader angular) throws IOException {
         StringBuilder sb = new StringBuilder();
         try (BufferedReader in = new BufferedReader(angular)) {
             String line;
