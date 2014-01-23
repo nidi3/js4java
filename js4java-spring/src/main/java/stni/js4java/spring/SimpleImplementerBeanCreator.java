@@ -7,7 +7,7 @@ import javax.script.ScriptException;
 /**
  *
  */
-public class SimpleImplementerFactoryBean extends AbstractImplementerFactoryBean<SimpleImplementer> {
+public class SimpleImplementerBeanCreator extends AbstractImplementerBeanCreator<SimpleImplementer> {
     @Override
     protected SimpleImplementer doCreateImplementer() throws ScriptException {
         return new SimpleImplementer(engine, javaToJsConverter);

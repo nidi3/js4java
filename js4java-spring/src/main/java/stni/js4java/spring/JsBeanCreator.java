@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  *
  */
-public class JsFactoryBean extends AbstractJsFactoryBean {
+public class JsBeanCreator extends AbstractJsBeanCreator {
     private Implementer implementer;
 
     @Override

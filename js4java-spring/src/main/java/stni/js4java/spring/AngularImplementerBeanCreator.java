@@ -3,7 +3,6 @@ package stni.js4java.spring;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import stni.js4java.runtime.AngularImplementer;
-import stni.js4java.runtime.Implementer;
 
 import javax.script.ScriptException;
 import java.io.IOException;
@@ -13,7 +12,7 @@ import java.util.Map;
 /**
  *
  */
-public class AngularImplementerFactoryBean extends AbstractImplementerFactoryBean<AngularImplementer> {
+public class AngularImplementerBeanCreator extends AbstractImplementerBeanCreator<AngularImplementer> {
     private Map<String, String> modules;
     private Resource angular;
 

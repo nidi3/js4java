@@ -12,7 +12,7 @@
         </constructor-arg>
     </bean>
 
-    <bean class="stni.js4java.spring.JsFactoryBean">
+    <bean class="stni.js4java.spring.JsBeanCreator">
         <property name="implementer" ref="simpleImplementer"/>
         <property name="services">
             <map>

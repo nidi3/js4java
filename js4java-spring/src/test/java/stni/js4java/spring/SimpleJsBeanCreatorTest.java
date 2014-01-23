@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @ContextConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-public class SimpleJsFactoryBeanTest {
+public class SimpleJsBeanCreatorTest {
     @Autowired
     private AddService addService;
 

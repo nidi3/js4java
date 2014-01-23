@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  *
  */
-public abstract class AbstractJsFactoryBean implements BeanFactoryPostProcessor {
+public abstract class AbstractJsBeanCreator implements BeanFactoryPostProcessor {
     private Map<Class<?>, Resource> services;
     private String encoding = "utf-8";
 

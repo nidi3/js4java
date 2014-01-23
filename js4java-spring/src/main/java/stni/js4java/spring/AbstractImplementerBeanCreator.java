@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  *
  */
-public abstract class AbstractImplementerFactoryBean<T extends Implementer> extends AbstractJsFactoryBean {
+public abstract class AbstractImplementerBeanCreator<T extends Implementer> extends AbstractJsBeanCreator {
     protected ScriptEngine engine;
     protected JavaToJsConverter javaToJsConverter;
     private T implementer;
