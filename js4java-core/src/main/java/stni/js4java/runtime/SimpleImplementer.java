@@ -9,7 +9,7 @@ import javax.script.ScriptException;
  */
 public class SimpleImplementer extends AbstractImplementer {
 
-    protected SimpleImplementer(ScriptEngine engine, JavaToJsConverter javaToJsConverter) throws ScriptException {
+    public SimpleImplementer(ScriptEngine engine, JavaToJsConverter javaToJsConverter) throws ScriptException {
         super(engine, javaToJsConverter);
     }
 

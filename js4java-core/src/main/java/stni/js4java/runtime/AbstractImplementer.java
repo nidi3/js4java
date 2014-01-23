@@ -24,4 +24,8 @@ public abstract class AbstractImplementer implements Implementer {
     protected String proxied(String jsObj) {
         return "$addProxies(" + jsObj + ")";
     }
+
+    public ScriptEngine getEngine() {
+        return engine;
+    }
 }

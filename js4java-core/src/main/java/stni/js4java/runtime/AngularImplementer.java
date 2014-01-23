@@ -60,6 +60,4 @@ public class AngularImplementer extends AbstractImplementer {
     public void service(String module, String name, String code) throws ScriptException {
         engine.eval("angular.module('" + module + "').service('" + name + "', function(){" + code + "});");
     }
-
-
 }

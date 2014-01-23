@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="stni.js4java.spring.AngularImplementerFactoryBean">
+        <property name="angular" value="classpath:stni/js4java/spring/angular-1.2.6.min.js"/>
+        <property name="modules">
+            <map>
+                <entry key="Arith" value=""/>
+            </map>
+        </property>
+        <property name="services">
+            <map>
+                <entry key="stni.js4java.spring.AddService" value="classpath:stni/js4java/spring/AddService.js"/>
+            </map>
+        </property>
+    </bean>
+</beans>

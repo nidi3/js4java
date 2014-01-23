@@ -12,6 +12,8 @@
     <modules>
         <module>js4java-core</module>
         <module>js4java-maven</module>
+        <module>js4java-spring</module>
+        <module>js4java-demo</module>
     </modules>
 
     <build>
