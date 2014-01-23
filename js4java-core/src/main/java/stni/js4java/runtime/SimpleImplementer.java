@@ -2,20 +2,20 @@ package stni.js4java.runtime;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 
 /**
  *
  */
-public class SimpleImplementer implements Implementer {
-    private final ScriptEngine engine;
+public class SimpleImplementer extends AbstractImplementer {
 
-    public SimpleImplementer(ScriptEngine engine) {
-        this.engine = engine;
+    protected SimpleImplementer(ScriptEngine engine, JavaToJsConverter javaToJsConverter) throws ScriptException {
+        super(engine, javaToJsConverter);
     }
 
     @Override
-    public <T> T implementBy(Class<T> clazz, String obj) {
+    public <T> T implementBy(Class<T> clazz, String obj) throws ScriptException {
         final Invocable invocable = (Invocable) engine;
-        return invocable.getInterface(engine.get(obj), clazz);
+        return invocable.getInterface(engine.eval(proxied(obj)), clazz);
     }
 }

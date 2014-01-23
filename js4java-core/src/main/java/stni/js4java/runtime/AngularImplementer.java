@@ -10,29 +10,13 @@ import java.io.Reader;
 /**
  *
  */
-public class AngularImplementer implements Implementer {
+public class AngularImplementer extends AbstractImplementer {
     private static final String DEFAULT_MODULE = "$default";
-    private final ScriptEngine engine;
 
-    public AngularImplementer(ScriptEngine engine, Reader angular) throws IOException, ScriptException {
-        engine.eval("window=(function(){return this;}());" +
-                "document={" +
-                "  addEventListener:function(){}," +
-                "  createElement:function(){" +
-                "    return {" +
-                "      setAttribute:function(){}," +
-                "      pathname:'xxx'," +
-                "      removeChild:function(){}" +
-                "    };" +
-                "  }," +
-                "  getElementsByTagName:function(){}" +
-                "};" +
-                "addEventListener=function(){};" +
-                "location={href:'http://my.com/path',protocol:'http'};" +
-                "setTimeout=function(){};" +
-                "navigator={};");
+    public AngularImplementer(ScriptEngine engine, JavaToJsConverter javaToJsConverter, Reader angular) throws IOException, ScriptException {
+        super(engine, javaToJsConverter);
+        engine.eval(Utils.loadResource("angularMocks.js"));
         engine.eval(fixIncompatabilities(angular));
-        this.engine = engine;
     }
 
     private String fixIncompatabilities(Reader angular) throws IOException {
@@ -58,7 +42,7 @@ public class AngularImplementer implements Implementer {
             app = appAndService.substring(0, pos);
             service = appAndService.substring(pos + 1);
         }
-        return invocable.getInterface(engine.eval(app + ".get('" + service + "')"), clazz);
+        return invocable.getInterface(engine.eval(proxied(app + ".get('" + service + "')")), clazz);
     }
 
     public void bootstrapDefault(String... modules) throws ScriptException {
@@ -66,28 +50,16 @@ public class AngularImplementer implements Implementer {
     }
 
     public void bootstrap(String target, String... modules) throws ScriptException {
-        engine.eval(target + "=angular.bootstrap({addEventListener:function(){}},[" + join(modules) + "]);");
+        engine.eval(target + "=angular.bootstrap({addEventListener:function(){}},[" + Utils.join(modules) + "]);");
     }
 
     public void module(String name, String... dependencies) throws ScriptException {
-        engine.eval("angular.module('" + name + "',[" + join(dependencies) + "]);");
+        engine.eval("angular.module('" + name + "',[" + Utils.join(dependencies) + "]);");
     }
 
     public void service(String module, String name, String code) throws ScriptException {
         engine.eval("angular.module('" + module + "').service('" + name + "', function(){" + code + "});");
     }
 
-    private String join(String... ss) {
-        String res = "";
-        boolean first = true;
-        for (String s : ss) {
-            if (first) {
-                first = false;
-            } else {
-                res += ",";
-            }
-            res += "'" + s + "'";
-        }
-        return res;
-    }
+
 }
