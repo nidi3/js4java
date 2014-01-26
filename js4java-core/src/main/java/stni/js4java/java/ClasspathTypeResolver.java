@@ -1,7 +1,6 @@
 package stni.js4java.java;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -16,7 +15,7 @@ public class ClasspathTypeResolver extends DefaultTypeResolver {
     }
 
     @Override
-    protected String resolveNonDefaultType(String jsType, Set<String> imports) {
+    protected String resolveNonDefaultType(String jsType, Imports imports) {
         for (String knownPackage : knownPackages) {
             final String className = knownPackage + "." + jsType;
             if (exists(className)) {

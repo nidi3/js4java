@@ -1,6 +1,5 @@
 package stni.js4java.java;
 
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +10,7 @@ public class DefaultTypeResolver implements TypeResolver {
     private static final Pattern TYPED_ARRAY = Pattern.compile("Array\\.<(.*?)>");
 
     @Override
-    public String toJavaType(String jsType, Set<String> imports) {
+    public String toJavaType(String jsType, Imports imports) {
         if (jsType.contains("|") || jsType.contains("function") || jsType.contains("{") || jsType.contains("...") || jsType.contains("=")) {
             throw new TypeResolverException("Not supported are: -type unions (a|b) -function types (function(...)) -record types ({a:b}) -varargs (...a) -optional types (a=)");
         }
@@ -38,11 +37,14 @@ public class DefaultTypeResolver implements TypeResolver {
                 if (arrayMatcher.matches()) {
                     return toJavaType(arrayMatcher.group(1), imports) + "[]";
                 }
+                if (imports.resolve(jsType) != null) {
+                    return jsType;
+                }
                 return resolveNonDefaultType(jsType, imports);
         }
     }
 
-    protected String resolveNonDefaultType(String jsType, Set<String> imports) {
+    protected String resolveNonDefaultType(String jsType, Imports imports) {
         throw new TypeResolverException("Unknown type '" + jsType + "'");
     }
 }

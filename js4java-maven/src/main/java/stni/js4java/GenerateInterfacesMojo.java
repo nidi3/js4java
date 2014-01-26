@@ -13,14 +13,15 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.util.FileUtils;
-import stni.js4java.java.ClasspathTypeResolver;
-import stni.js4java.java.DefaultInterfaceCreator;
-import stni.js4java.java.DefaultTypeResolver;
-import stni.js4java.java.TypeResolver;
+import stni.js4java.java.*;
 import stni.js4java.jsdoc.DefaultJsDocParser;
 import stni.js4java.jsdoc.JsDoc;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,34 +35,40 @@ public class GenerateInterfacesMojo extends AbstractMojo {
     private MavenProject project;
 
     /**
+     * Comma separated list of patterns to define which js files to process.
      */
     @Parameter(property = "includes", defaultValue = "**/*.js")
     private String includes = "**/*.js";
 
     /**
+     * The base directory from where 'includes' is searched.
      */
     @Parameter(property = "includeBasedir", defaultValue = "src/main/js")
     private String includeBasedir = "src/main/js";
 
     /**
+     * Comma separated list of java packages that should be known.
      */
     @Parameter(property = "importPackages")
     private String importPackages;
 
+    /**
+     * If jsr-303 validators should automatically be generated.
+     * If true, all functions named 'isValidXxx' with one parameter and boolean return type are treated as validator functions.
+     */
+    @Parameter(property = "generateValidators", defaultValue = "true")
+    private boolean generateValidators = true;
+
     private File outputDir;
     private File includeBase;
-    private DefaultJsDocParser parser;
-    private DefaultInterfaceCreator creator;
+    private DefaultJsDocParser parser=new DefaultJsDocParser();
+    private List<InterfaceCreator> creators;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
-            handleOutputDirectories();
-            parser = new DefaultJsDocParser();
-            final TypeResolver typeResolver = importPackages == null
-                    ? new DefaultTypeResolver()
-                    : new ClasspathTypeResolver(Arrays.asList(importPackages.split(",")), extendClasspathWithCompile());
-            creator = new DefaultInterfaceCreator(typeResolver);
+            initInputAndOutput();
+            initCreators();
 
             for (File file : findInputs()) {
                 createOutput(file);
@@ -71,7 +78,7 @@ public class GenerateInterfacesMojo extends AbstractMojo {
         }
     }
 
-    private void handleOutputDirectories() {
+    private void initInputAndOutput() {
         includeBase = new File(project.getBasedir(), includeBasedir);
         final String output = "target/generated-sources/js4java";
         outputDir = new File(project.getBasedir(), output);
@@ -81,6 +88,18 @@ public class GenerateInterfacesMojo extends AbstractMojo {
         final Resource js = new Resource();
         js.setDirectory(includeBasedir);
         project.addResource(js);
+    }
+
+    private void initCreators() throws DependencyResolutionRequiredException, MojoExecutionException {
+        final TypeResolver typeResolver = importPackages == null
+                ? new DefaultTypeResolver()
+                : new ClasspathTypeResolver(Arrays.asList(importPackages.split(",")), extendClasspathWithCompile());
+
+        creators = new ArrayList<>();
+        creators.add(new DefaultInterfaceCreator(typeResolver));
+        if (generateValidators) {
+            creators.add(new Jsr303InterfaceCreator(typeResolver));
+        }
     }
 
     private List<File> findInputs() throws IOException {
@@ -97,8 +116,11 @@ public class GenerateInterfacesMojo extends AbstractMojo {
             final String relative = relative(includeBase, file);
             File filebase = new File(outputDir, relative);
             filebase.mkdirs();
-            final OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(new File(filebase, name + ".java")), "utf-8");
-            creator.createInterface(jsDocs, relative.replace('/', '.') + name, out);
+            for (InterfaceCreator creator : creators) {
+                for (InterfaceDescriptor descriptor : creator.createInterfaces(jsDocs, name, relative.replace('/', '.'))) {
+                    descriptor.write(filebase, "utf-8");
+                }
+            }
         }
     }
 
@@ -108,7 +130,7 @@ public class GenerateInterfacesMojo extends AbstractMojo {
             file = file.getParentFile();
             res = file.getName() + "/" + res;
         }
-        return res;
+        return res.substring(0, res.length() - 1);
     }
 
     protected ClassLoader extendPluginClasspath(List<String> elements) throws MojoExecutionException {

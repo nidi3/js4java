@@ -37,6 +37,14 @@ public class JsDoc implements Iterable<List<JsDocTag>> {
         return tag == null ? null : tag.get(0);
     }
 
+    public List<JsDocTag> getTags() {
+        List<JsDocTag> res = new ArrayList<>();
+        for (List<JsDocTag> tagList : tags.values()) {
+            res.addAll(tagList);
+        }
+        return res;
+    }
+
     public List<JsDocTag> getTags(String name) {
         final List<JsDocTag> tag = tags.get(name);
         return tag == null ? Collections.<JsDocTag>emptyList() : tag;

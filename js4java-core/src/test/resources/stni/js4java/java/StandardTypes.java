@@ -6,7 +6,7 @@ import java.util.List;
 public interface StandardTypes{
   /**
    * bla
-   * @return blu
+   * @return ret
    */
   String a();
 
@@ -17,7 +17,7 @@ public interface StandardTypes{
    * @param c w
    * @param d w
    * @param e w
-   * @return blu
+   * @return ret
    */
   Date b(double a, Double b, boolean c, Boolean d, List e);
 

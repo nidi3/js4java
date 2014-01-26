@@ -6,7 +6,7 @@ angular.module('Shared')
          * @param {string} email
          * @returns {boolean} if it is valid email.
          */
-        this.email = function (email) {
+        this.isValidEmail = function (email) {
             return !!email && /^[A-Za-z0-9_\-]+@[A-Za-z0-9_\-]+\.[a-z]{2,}$/.test(email);
         };
     });

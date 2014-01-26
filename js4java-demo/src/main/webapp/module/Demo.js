@@ -4,7 +4,7 @@ angular.module('Demo', ['Shared'])
         $scope.model = {};
 
         $scope.emailValid = function () {
-            return Validation.email($scope.model.email) ? 'valid' : 'invalid';
+            return Validation.isValidEmail($scope.model.email) ? 'valid' : 'invalid';
         };
 
         $scope.growth = function () {
