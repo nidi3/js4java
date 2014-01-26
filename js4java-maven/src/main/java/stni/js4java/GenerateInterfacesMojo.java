@@ -4,6 +4,10 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
@@ -21,41 +25,32 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @requiresDependencyResolution compile
- * @phase generate-resources
- * @goal generate
+ *
  */
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class GenerateInterfacesMojo extends AbstractMojo {
 
-    /**
-     * @parameter property="project"
-     * @required
-     * @readonly
-     */
+    @Parameter(property = "project", readonly = true, required = true)
     private MavenProject project;
 
     /**
-     * @parameter property="includes"
-     * @required
      */
+    @Parameter(property = "includes", required = true)
     private String includes;
 
     /**
-     * @parameter property="includeBasedir"
-     * @required
      */
+    @Parameter(property = "includeBasedir", required = true)
     private String includeBasedir;
 
     /**
-     * @parameter property="package"
-     * @required
      */
+    @Parameter(property = "package", required = true)
     private String packge;
 
     /**
-     * @parameter property="importPackages"
-     * @required
      */
+    @Parameter(property = "importPackages", required = true)
     private String importPackages;
 
     private File outputDir;
