@@ -38,4 +38,22 @@
         </dependency>
     </dependencies>
 
+    <scm>
+        <connection>scm:git:https://github.com/nidi3/js4java</connection>
+        <developerConnection>scm:git:https://github.com/nidi3/js4java</developerConnection>
+        <url>https://github.com/nidi3/js4java</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Internal Repository</name>
+            <url>${internal.repo.path}/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>internal.repo</id>
+            <name>Internal Repository</name>
+            <url>${internal.repo.path}/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
