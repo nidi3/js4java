@@ -18,4 +18,13 @@ angular.module('Shared')
         this.isValidAge = function (age) {
             return !age || (age >= 0 && age <= 120);
         };
+
+        /**
+         *
+         * @param {*} height
+         * @returns {!boolean}
+         */
+        this.isValidHeight = function (height) {
+            return !height || (typeof height === 'number' && height >= 50 && height <= 250);
+        };
     });

@@ -8,6 +8,7 @@ public class Model {
     private String email;
     @ValidAge
     private Double age;
+    @ValidHeight
     private Double height;
 
     public String getEmail() {

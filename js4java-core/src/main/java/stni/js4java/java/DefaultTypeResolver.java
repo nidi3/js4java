@@ -21,6 +21,9 @@ public class DefaultTypeResolver implements TypeResolver {
         }
 
         switch (jsType) {
+            case "*":
+            case "?":
+                return "Object";
             case "string":
                 return "String";
             case "number":

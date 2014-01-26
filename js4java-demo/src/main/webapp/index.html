@@ -9,7 +9,9 @@ E-mail: <input ng-model="model.email"> <br>
 Age: <input ng-model="model.age">  years<br>
 Height: <input ng-model="model.height"> cm <br>
 <hr>
-E-mail is {{emailValid()}} <br>
+Valid E-mail: {{emailValid()}} <br>
+Valid age: {{ageValid()}} <br>
+Valid height: {{heightValid()}} <br>
 Growth per year {{growth()}} cm/year <br>
 <button ng-click="send()">Send to Server</button><br>
 Server response: {{response|json}}

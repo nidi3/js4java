@@ -4,7 +4,13 @@ angular.module('Demo', ['Shared'])
         $scope.model = {};
 
         $scope.emailValid = function () {
-            return Validation.isValidEmail($scope.model.email) ? 'valid' : 'invalid';
+            return Validation.isValidEmail($scope.model.email);
+        };
+        $scope.ageValid = function () {
+            return Validation.isValidAge($scope.model.age);
+        };
+        $scope.heightValid = function () {
+            return Validation.isValidHeight($scope.model.height);
         };
 
         $scope.growth = function () {
