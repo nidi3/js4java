@@ -1,6 +1,7 @@
 package stni.js4java;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -76,6 +77,10 @@ public class GenerateInterfacesMojo extends AbstractMojo {
         outputDir = new File(project.getBasedir(), output);
         outputDir.mkdirs();
         project.addCompileSourceRoot(output);
+
+        final Resource js = new Resource();
+        js.setDirectory(includeBasedir);
+        project.addResource(js);
     }
 
     private List<File> findInputs() throws IOException {
