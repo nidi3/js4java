@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Js4Java - Demo</title>
+</head>
+<body ng-app="Demo" ng-controller="Main">
+E-mail: <input ng-model="model.email"> <br>
+Age: <input ng-model="model.age">  years<br>
+Height: <input ng-model="model.height"> cm <br>
+<hr>
+E-mail is {{emailValid()}} <br>
+Growth per year {{growth()}} cm/year <br>
+<button ng-click="send()">Send to Server</button><br>
+Server response: {{response|json}}
+
+<script src="vendor/angular/angular.min.js"></script>
+
+<script src="app/shared/Module.js"></script>
+<script src="app/shared/Validation.js"></script>
+<script src="app/shared/Calc.js"></script>
+<script src="module/Demo.js"></script>
+</body>
+</html>

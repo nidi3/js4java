@@ -10,10 +10,6 @@
                 <entry key="Arith" value=""/>
             </map>
         </property>
-        <property name="services">
-            <map>
-                <entry key="stni.js4java.spring.AddService" value="classpath:stni/js4java/spring/AddService.js"/>
-            </map>
-        </property>
+        <property name="serviceBasePackage" value="stni.js4java.spring"/>
     </bean>
 </beans>
