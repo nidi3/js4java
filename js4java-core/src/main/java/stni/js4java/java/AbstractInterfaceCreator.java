@@ -35,7 +35,7 @@ public abstract class AbstractInterfaceCreator implements InterfaceCreator {
         return "public interface " + name + "{\n";
     }
 
-    protected String method(JsDoc jsDoc,Imports imports) {
+    protected String method(JsDoc jsDoc, Imports imports) {
         String res = "";
         if (jsDoc.getElement().isFunction()) {
             final JsDocTag ret = jsDoc.getReturnTag();
@@ -82,6 +82,14 @@ public abstract class AbstractInterfaceCreator implements InterfaceCreator {
 
     protected String resolveType(JsDocTag tag, Imports imports) {
         return typeResolver.toJavaType(tag.getType(), imports);
+    }
+
+    protected String boxedJavaType(String type) {
+        return typeResolver.boxedJava(type);
+    }
+
+    protected String boxedJsType(String type) {
+        return typeResolver.boxedJs(type);
     }
 
     protected String decapitalize(String s) {

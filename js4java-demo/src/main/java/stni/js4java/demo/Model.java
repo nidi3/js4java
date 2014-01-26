@@ -6,6 +6,7 @@ package stni.js4java.demo;
 public class Model {
     @ValidEmail
     private String email;
+    @ValidAge
     private Double age;
     private Double height;
 

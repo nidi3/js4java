@@ -15,8 +15,9 @@ public class DefaultInterfaceCreator extends AbstractInterfaceCreator {
 
     @Override
     public List<InterfaceDescriptor> createInterfaces(List<JsDoc> jsDocs, String sourceName, String targetPackage) {
-        final String methods = methods(jsDocs, new Imports());
-        final String s = header(sourceName, targetPackage, new Imports()) + methods + footer();
+        final Imports imports = new Imports();
+        final String methods = methods(jsDocs, imports);
+        final String s = header(sourceName, targetPackage, imports) + methods + footer();
         return Collections.singletonList(new InterfaceDescriptor(sourceName, s));
     }
 

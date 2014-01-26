@@ -6,7 +6,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import stni.js4java.java.Validators;
 
-public class NameConstraintValidator implements ConstraintValidator<Annotation, String>{
+public class AgeConstraintValidator implements ConstraintValidator<Annotation, Double>{
 
   @Autowired
   private Validators validators;
@@ -15,11 +15,11 @@ public class NameConstraintValidator implements ConstraintValidator<Annotation, 
 
   /**
    * bla
-   * @param name w
+   * @param age w
    * @return ret
    */
-  public boolean isValid(String name, ConstraintValidatorContext context){
-    return validators.isValidName(name);
+  public boolean isValid(Double age, ConstraintValidatorContext context){
+    return validators.isValidAge(age);
   }
 
 }

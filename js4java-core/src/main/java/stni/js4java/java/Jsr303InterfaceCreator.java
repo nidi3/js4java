@@ -23,7 +23,7 @@ public class Jsr303InterfaceCreator extends AbstractInterfaceCreator {
     public List<InterfaceDescriptor> createInterfaces(List<JsDoc> jsDocs, String sourceName, String targetPackage) {
         List<InterfaceDescriptor> res = new ArrayList<>();
         for (JsDoc jsDoc : jsDocs) {
-            if (isValidator(jsDoc,new Imports())) {
+            if (isValidator(jsDoc, new Imports())) {
                 String name = validElementName(jsDoc) + "ConstraintValidator";
                 res.add(new InterfaceDescriptor(name, createInterface(jsDoc, sourceName, name, targetPackage)));
             }
@@ -75,12 +75,15 @@ public class Jsr303InterfaceCreator extends AbstractInterfaceCreator {
 
     private JsDoc validatorJsDoc(JsDoc jsDoc) {
         final List<JsDocTag> tags = jsDoc.getTags();
+        final JsDocTag param = jsDoc.getTag(Tag.PARAM);
+        tags.add(new JsDocTag(Tag.PARAM, boxedJsType(param.getType()), param.getParameter(), param.getDescription()));
         tags.add(new JsDocTag(Tag.PARAM, "ConstraintValidatorContext", "context", ""));
+        tags.remove(param);
         return new JsDoc(jsDoc.getDescription(), tags, new JsDocedElement("isValid", true));
     }
 
     private String classDef(JsDoc jsDoc, String sourceName, String name, Imports imports) {
-        return "public class " + name + " implements ConstraintValidator<Annotation, " + resolveType(jsDoc.getTag(Tag.PARAM), imports) + ">{\n\n" +
+        return "public class " + name + " implements ConstraintValidator<Annotation, " + boxedJavaType(resolveType(jsDoc.getTag(Tag.PARAM), imports)) + ">{\n\n" +
                 "  @Autowired\n" +
                 "  private " + sourceName + " " + decapitalize(sourceName) + ";\n\n" +
                 "  public void initialize(Annotation constraintAnnotation) {}\n\n";

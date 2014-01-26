@@ -44,10 +44,10 @@ public class DefaultInterfaceCreatorTest extends AbstractInterfaceCreatorTest {
                 doc(func("a"), returnTag("string")),
                 doc(func("b"),
                         returnTag("Date"),
-                        paramTag("number", "a"),
-                        paramTag("?number", "b"),
-                        paramTag("boolean", "c"),
-                        paramTag("?boolean", "d"),
+                        paramTag("!number", "a"),
+                        paramTag("number", "b"),
+                        paramTag("!boolean", "c"),
+                        paramTag("boolean", "d"),
                         paramTag("List", "e")
                 ));
 

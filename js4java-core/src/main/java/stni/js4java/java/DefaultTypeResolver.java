@@ -24,9 +24,9 @@ public class DefaultTypeResolver implements TypeResolver {
             case "string":
                 return "String";
             case "number":
-                return nullable ? "Double" : "double";
+                return nonNullable ? "double" : "Double";
             case "boolean":
-                return nullable ? "Boolean" : "boolean";
+                return nonNullable ? "boolean" : "Boolean";
             case "Date":
                 imports.add("java.util.Date");
                 return "Date";
@@ -42,6 +42,23 @@ public class DefaultTypeResolver implements TypeResolver {
                 }
                 return resolveNonDefaultType(jsType, imports);
         }
+    }
+
+    @Override
+    public String boxedJava(String type) {
+        switch (type) {
+            case "double":
+                return "Double";
+            case "boolean":
+                return "Boolean";
+            default:
+                return type;
+        }
+    }
+
+    @Override
+    public String boxedJs(String type) {
+        return type.startsWith("!") ? type.substring(1) : type;
     }
 
     protected String resolveNonDefaultType(String jsType, Imports imports) {
